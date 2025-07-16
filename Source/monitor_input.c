@@ -19,9 +19,6 @@ void monitor_input() {
     newt.c_lflag &= ~(ICANON | ECHO);
     tcsetattr(STDIN_FILENO, TCSANOW, &newt);
 
-    printf("Monitoring input... Press '?' or ENTER to trigger message.\n");
-    printf("Press Ctrl+C to exit.\n");
-
     while (1) {
         ch = getchar();
         if (ch == '?' || ch == '\n') {
