@@ -1,6 +1,6 @@
 SRC := $(wildcard *.c)
 OBJ := $(SRC:.c=.o)
-APP := nokia_olt_sim
+APP ?= nokia_olt_sim
 
 all: $(APP)
 
