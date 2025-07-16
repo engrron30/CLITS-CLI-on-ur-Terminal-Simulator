@@ -6,3 +6,6 @@ all: $(APP)
 
 $(APP):
 	gcc $(SRC) -o $(APP)
+
+clean:
+	rm -f $(OBJ) $(APP)
