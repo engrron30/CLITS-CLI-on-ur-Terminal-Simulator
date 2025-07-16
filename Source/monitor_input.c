@@ -2,6 +2,11 @@
 #include <termios.h>
 #include <unistd.h>
 
+void test_func()
+{
+    printf("Test function working correctly!\n\n\n");
+}
+
 void monitor_input() {
     struct termios oldt, newt;
     int ch;

@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#include "monitor_input.h"
+
 static void welcome_notes(void);
 
 
