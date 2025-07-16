@@ -8,6 +8,7 @@ static void welcome_notes(void);
 int main()
 {
     welcome_notes();
+    test_func();
     return 0;
 }
 
