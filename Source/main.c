@@ -1,7 +1,16 @@
 #include <stdio.h>
 
+static void welcome_notes(void);
+
+
 int main()
 {
-    printf("C File Sanity Check Done! \n");
+    welcome_notes();
     return 0;
+}
+
+
+static void welcome_notes(void) {
+    printf("Welcome to ISAM\n");
+    printf("last login : <TO-DO>\n\n");
 }
