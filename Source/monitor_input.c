@@ -1,34 +1,71 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <termios.h>
 #include <unistd.h>
 
-void test_func()
+#define CMDLINE_NAME            "type:ALU-7360>#"
+#define CMDLINE_QUERY_CMD_CHAR  '?'
+#define CMDLINE_INPUT_LEN       128
+#define DIR_DATA                "Data/"
+
+static void process_command(const char *cmd);
+static char get_char_without_newline(void);
+
+void monitor_input(void)
 {
-    printf("Test function working correctly!\n\n\n");
-}
-
-void monitor_input() {
-    struct termios oldt, newt;
-    int ch;
-
-    // Save current terminal settings
-    tcgetattr(STDIN_FILENO, &oldt);
-    newt = oldt;
-
-    // Set terminal to raw mode (non-canonical, no echo)
-    newt.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-
-    printf("Monitoring input... Press '?' or ENTER to trigger message.\n");
-    printf("Press Ctrl+C to exit.\n");
+    char input[CMDLINE_INPUT_LEN], input_ch;
 
     while (1) {
-        ch = getchar();
-        if (ch == '?' || ch == '\n') {
-            printf("type:ALU-7360>#\n");
-        }
-    }
+        printf("%s ", CMDLINE_NAME);
+        fflush(stdout);
 
-    // Restore original terminal settings (unreachable here unless you break the loop)
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+        // Monitor '?' character
+        input_ch = get_char_without_newline();
+        if (input_ch == CMDLINE_QUERY_CMD_CHAR) {
+            system("cat Data/?");
+            continue;
+        }
+
+        // Command by User
+        ungetc(input_ch, stdin);
+        printf("%c", input_ch);
+        fflush(stdout);
+        if (fgets(input, sizeof(input), stdin) == NULL)
+            break;
+
+        input[strcspn(input, "\n")] = 0;
+        process_command(input);  // Call your command processor
+    }
 }
+
+
+static void process_command(const char *cmd) {
+    if (strcmp(cmd, "hello") == 0) {
+        printf("Hello there!\n");
+    } else if (strcmp(cmd, "exit") == 0) {
+        printf("Exiting CLI...\n");
+        exit(0);
+    } else {
+        printf("Unknown command: %s\n", cmd);
+    }
+}
+
+/* Waits for user to input a character and saves it to ch
+ * without waiting for the user to hit newline
+ * */
+static char get_char_without_newline(void)
+{
+    struct termios oldt, newt;
+    char ch;
+
+    tcgetattr(STDIN_FILENO, &oldt);
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    ch = getchar();
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+
+    return ch;
+}
+
