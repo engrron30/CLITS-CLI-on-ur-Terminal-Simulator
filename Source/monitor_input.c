@@ -8,11 +8,6 @@
 
 static void process_command(const char *cmd);
 
-void test_func()
-{
-    printf("Test function working correctly!\n\n\n");
-}
-
 void monitor_input() {
     char input[CMDLINE_DEFAULT_INPUT_LEN], input_ch;
 
