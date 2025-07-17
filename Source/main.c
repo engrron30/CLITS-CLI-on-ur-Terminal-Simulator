@@ -4,7 +4,6 @@
 
 static void welcome_notes(void);
 
-
 int main()
 {
     welcome_notes();
