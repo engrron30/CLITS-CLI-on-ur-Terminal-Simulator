@@ -35,7 +35,7 @@ void monitor_input(void)
             break;
 
         input[strcspn(input, "\n")] = 0;
-        process_command(input);  // Call your command processor
+        process_command(input);
     }
 }
 
