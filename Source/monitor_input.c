@@ -1,6 +1,12 @@
-#include <stdio.h>
-#include <termios.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define CMDLINE_DEFAULT_NAME        "type:ALU-7360>#"
+#define CMDLINE_DEFAULT_INPUT_LEN   128
+
+static void process_command(const char *cmd);
 
 void test_func()
 {
@@ -8,27 +14,23 @@ void test_func()
 }
 
 void monitor_input() {
-    struct termios oldt, newt;
-    int ch;
-
-    // Save current terminal settings
-    tcgetattr(STDIN_FILENO, &oldt);
-    newt = oldt;
-
-    // Set terminal to raw mode (non-canonical, no echo)
-    newt.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-
-    printf("Monitoring input... Press '?' or ENTER to trigger message.\n");
-    printf("Press Ctrl+C to exit.\n");
+    char input[CMDLINE_DEFAULT_INPUT_LEN], input_ch;
 
     while (1) {
-        ch = getchar();
-        if (ch == '?' || ch == '\n') {
-            printf("type:ALU-7360>#\n");
-        }
+        printf("%s ", CMDLINE_DEFAULT_NAME);
+        if (fgets(input, sizeof(input), stdin) == NULL)
+            break;
+        input[strcspn(input, "\n")] = 0;
     }
+}
 
-    // Restore original terminal settings (unreachable here unless you break the loop)
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+static void process_command(const char *cmd) {
+    if (strcmp(cmd, "hello") == 0) {
+        printf("Hello there!\n");
+    } else if (strcmp(cmd, "exit") == 0) {
+        printf("Exiting CLI...\n");
+        exit(0);
+    } else {
+        printf("Unknown command: %s\n", cmd);
+    }
 }
