@@ -5,12 +5,13 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include "process_commands.h"
+
 #define CMDLINE_NAME            "type:ALU-7360>#"
 #define CMDLINE_QUERY_CMD_CHAR  '?'
 #define CMDLINE_INPUT_LEN       128
 #define DIR_DATA                "Data/"
 
-static void process_command(const char *cmd);
 static char get_char_without_newline(void);
 
 /* Monitors user input by character by get_char_without_newline().
@@ -20,7 +21,10 @@ static char get_char_without_newline(void);
  *       (3) BACKSPACE  (then remove last character typed by user) 
  * 
  * If none of them, keep of adding the character typed by user
- * in input string. Wait until the user hit newline to process_command.
+ * in input string then monitor the characters if criteria
+ * above are to be observed.
+ *
+ * Wait until the user hit newline to process_command.
  * */
 void monitor_input(void)
 {
@@ -70,13 +74,14 @@ void monitor_input(void)
         }
 
         if (pos > 0) {
+            printf("TO-DO: process_command");
             process_command(input);
         }
     }
 }
 
 
-static void process_command(const char *cmd) {
+/*static void process_command(const char *cmd) {
     if (strcmp(cmd, "hello") == 0) {
         printf("Hello there!\n");
     } else if (strcmp(cmd, "exit") == 0) {
@@ -85,7 +90,7 @@ static void process_command(const char *cmd) {
     } else {
         printf("Unknown command: %s\n", cmd);
     }
-}
+}*/
 
 /* Waits for user to input a character and saves it to ch
  * without waiting for the user to hit newline

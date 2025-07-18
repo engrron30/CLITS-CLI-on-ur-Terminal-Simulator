@@ -8,8 +8,11 @@ CFLAGS := -I$(INC)
 
 all: $(APP)
 
-$(APP):
-	gcc $(CFLAGS) $(SRC) -o $(APP)
+$(APP): $(OBJ)
+	gcc $(CFLAGS) $(OBJ) -o $(APP)
+
+%.o: %.c
+	gcc $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJ) $(APP)
