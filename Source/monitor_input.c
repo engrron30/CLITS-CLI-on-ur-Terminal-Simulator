@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,18 +13,27 @@
 static void process_command(const char *cmd);
 static char get_char_without_newline(void);
 
+/* Monitors user input by character by get_char_without_newline().
+ * The character is checked whether it is:
+ *       (1) newline    (proceed to process_command and clear input)
+ *       (2) ?          (then will show suggestons),
+ *       (3) BACKSPACE  (then remove last character typed by user) 
+ * 
+ * If none of them, keep of adding the character typed by user
+ * in input string. Wait until the user hit newline to process_command.
+ * */
 void monitor_input(void)
 {
     char input[CMDLINE_INPUT_LEN];
     int pos = 0;
     char ch;
 
-    while (1) {
+    while (true) {
         printf("%s ", CMDLINE_NAME);
         fflush(stdout);
         pos = 0;
 
-        while (1) {
+        while (true) {
             ch = get_char_without_newline();
 
             if (ch == '\n') {
@@ -35,7 +45,7 @@ void monitor_input(void)
             // Monitor ? CHAR from user
             if (ch == CMDLINE_QUERY_CMD_CHAR) {
                 printf("\n[Help] You typed '?'. Displaying suggestions:\n");
-                //system("cat Data/?");  // Or use printf-based help
+                //system("cat Data/?");
                 printf("%s %.*s", CMDLINE_NAME, pos, input);
                 fflush(stdout);
                 continue;
@@ -51,7 +61,7 @@ void monitor_input(void)
                 continue;
             }
 
-            // Monitor other commands input by user
+            // Monitor other chaacters and append it to char input[]
             if (pos < CMDLINE_INPUT_LEN - 1) {
                 input[pos++] = ch;
                 putchar(ch);
