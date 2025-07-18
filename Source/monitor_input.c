@@ -13,6 +13,8 @@
 #define DIR_DATA                "Data/"
 
 static char get_char_without_newline(void);
+static bool monitor_newline_from_ch(char ch, char command[], int command_len);
+static bool monitor_querychar_from_ch(char ch, char command[], int command_len);
 
 /* Monitors user input by character by get_char_without_newline().
  * The character is checked whether it is:
@@ -28,37 +30,30 @@ static char get_char_without_newline(void);
  * */
 void monitor_input(void)
 {
-    char input[CMDLINE_INPUT_LEN];
-    int pos = 0;
+    char user_cmd[CMDLINE_INPUT_LEN];
+    int user_cmd_len = 0;
     char ch;
 
     while (true) {
         printf("%s ", CMDLINE_NAME);
         fflush(stdout);
-        pos = 0;
+        user_cmd_len = 0;
 
         while (true) {
             ch = get_char_without_newline();
 
-            if (ch == '\n') {
-                input[pos] = '\0';
-                printf("\n");
+            if (monitor_newline_from_ch(ch, user_cmd, user_cmd_len)) {
                 break;
             }
 
-            // Monitor ? CHAR from user
-            if (ch == CMDLINE_QUERY_CMD_CHAR) {
-                printf("\n[Help] You typed '?'. Displaying suggestions:\n");
-                //system("cat Data/?");
-                printf("%s %.*s", CMDLINE_NAME, pos, input);
-                fflush(stdout);
+            if (monitor_querychar_from_ch(ch, user_cmd, user_cmd_len)) {
                 continue;
             }
 
             // Monitor backspace CHAR from user
             if (ch == 127 || ch == '\b') {
-                if (pos > 0) {
-                    pos--;
+                if (user_cmd_len > 0) {
+                    user_cmd_len--;
                     printf("\b \b");
                     fflush(stdout);
                 }
@@ -66,31 +61,19 @@ void monitor_input(void)
             }
 
             // Monitor other chaacters and append it to char input[]
-            if (pos < CMDLINE_INPUT_LEN - 1) {
-                input[pos++] = ch;
+            if (user_cmd_len < CMDLINE_INPUT_LEN - 1) {
+                user_cmd[user_cmd_len++] = ch;
                 putchar(ch);
                 fflush(stdout);
             }
         }
 
-        if (pos > 0) {
-            printf("TO-DO: process_command");
-            process_command(input);
+        if (user_cmd_len > 0) {
+            process_command(user_cmd);
         }
     }
 }
 
-
-/*static void process_command(const char *cmd) {
-    if (strcmp(cmd, "hello") == 0) {
-        printf("Hello there!\n");
-    } else if (strcmp(cmd, "exit") == 0) {
-        printf("Exiting CLI...\n");
-        exit(0);
-    } else {
-        printf("Unknown command: %s\n", cmd);
-    }
-}*/
 
 /* Waits for user to input a character and saves it to ch
  * without waiting for the user to hit newline
@@ -110,3 +93,36 @@ static char get_char_without_newline(void)
     return ch;
 }
 
+/* Monitors if current character is newline.
+ *
+ * If newline is found, append NULL instead of newline
+ * then return true.
+ * */
+static bool monitor_newline_from_ch(char ch, char command[], int command_len)
+{
+    bool rv = false;
+    if (ch == '\n')
+    {
+        command[command_len] = '\0';
+        printf("\n");
+        rv = true;
+    }
+
+    return rv;
+}
+
+static bool monitor_querychar_from_ch(char ch, char command[], int command_len)
+{
+    bool rv = false;
+    if (ch == CMDLINE_QUERY_CMD_CHAR)
+    {
+
+        printf("\n[Help] You typed '?'. Displaying suggestions:\n");
+        // TO-DO: Add specific action for QUERY CHAR is entered
+        printf("%s %.*s", CMDLINE_NAME, command_len, command);
+        fflush(stdout);
+        rv = true;
+    }
+
+    return rv;
+}
