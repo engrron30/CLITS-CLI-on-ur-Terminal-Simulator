@@ -14,28 +14,54 @@ static char get_char_without_newline(void);
 
 void monitor_input(void)
 {
-    char input[CMDLINE_INPUT_LEN], input_ch;
+    char input[CMDLINE_INPUT_LEN];
+    int pos = 0;
+    char ch;
 
     while (1) {
         printf("%s ", CMDLINE_NAME);
         fflush(stdout);
+        pos = 0;
 
-        // Monitor '?' character
-        input_ch = get_char_without_newline();
-        if (input_ch == CMDLINE_QUERY_CMD_CHAR) {
-            system("cat Data/?");
-            continue;
+        while (1) {
+            ch = get_char_without_newline();
+
+            if (ch == '\n') {
+                input[pos] = '\0';
+                printf("\n");
+                break;
+            }
+
+            // Monitor ? CHAR from user
+            if (ch == CMDLINE_QUERY_CMD_CHAR) {
+                printf("\n[Help] You typed '?'. Displaying suggestions:\n");
+                //system("cat Data/?");  // Or use printf-based help
+                printf("%s %.*s", CMDLINE_NAME, pos, input);
+                fflush(stdout);
+                continue;
+            }
+
+            // Monitor backspace CHAR from user
+            if (ch == 127 || ch == '\b') {
+                if (pos > 0) {
+                    pos--;
+                    printf("\b \b");
+                    fflush(stdout);
+                }
+                continue;
+            }
+
+            // Monitor other commands input by user
+            if (pos < CMDLINE_INPUT_LEN - 1) {
+                input[pos++] = ch;
+                putchar(ch);
+                fflush(stdout);
+            }
         }
 
-        // Command by User
-        ungetc(input_ch, stdin);
-        printf("%c", input_ch);
-        fflush(stdout);
-        if (fgets(input, sizeof(input), stdin) == NULL)
-            break;
-
-        input[strcspn(input, "\n")] = 0;
-        process_command(input);  // Call your command processor
+        if (pos > 0) {
+            process_command(input);
+        }
     }
 }
 
