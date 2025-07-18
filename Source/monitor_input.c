@@ -13,6 +13,7 @@
 #define DIR_DATA                "Data/"
 
 static char get_char_without_newline(void);
+static bool monitor_newline_from_ch(char ch, char command[], int command_len);
 
 /* Monitors user input by character by get_char_without_newline().
  * The character is checked whether it is:
@@ -40,9 +41,13 @@ void monitor_input(void)
         while (true) {
             ch = get_char_without_newline();
 
-            if (ch == '\n') {
+            /*if (ch == '\n') {
                 input[pos] = '\0';
                 printf("\n");
+                break;
+            }*/
+
+            if (monitor_newline_from_ch(ch, input, pos)) {
                 break;
             }
 
@@ -74,23 +79,11 @@ void monitor_input(void)
         }
 
         if (pos > 0) {
-            printf("TO-DO: process_command");
             process_command(input);
         }
     }
 }
 
-
-/*static void process_command(const char *cmd) {
-    if (strcmp(cmd, "hello") == 0) {
-        printf("Hello there!\n");
-    } else if (strcmp(cmd, "exit") == 0) {
-        printf("Exiting CLI...\n");
-        exit(0);
-    } else {
-        printf("Unknown command: %s\n", cmd);
-    }
-}*/
 
 /* Waits for user to input a character and saves it to ch
  * without waiting for the user to hit newline
@@ -108,5 +101,26 @@ static char get_char_without_newline(void)
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 
     return ch;
+}
+
+/* Monitors if current character is newline.
+ *
+ * If newline is found, append NULL instead of newline
+ * then return true.
+ * */
+static bool monitor_newline_from_ch(char ch, 
+                                    char command[],
+                                    int command_len)
+{
+    bool rv = false;
+
+    if (ch == '\n')
+    {
+        command[command_len] = '\0';
+        printf("\n");
+        rv = true;
+    }
+
+    return rv;
 }
 
