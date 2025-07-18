@@ -59,9 +59,21 @@ void monitor_input(void)
             }
         }
 
+<<<<<<< HEAD
         if (pos > 0) {
             process_command(input);
         }
+=======
+        // Command by User
+        ungetc(input_ch, stdin);
+        printf("%c", input_ch);
+        fflush(stdout);
+        if (fgets(input, sizeof(input), stdin) == NULL)
+            break;
+
+        input[strcspn(input, "\n")] = 0;
+        process_command(input);
+>>>>>>> 72208628b4df2c71d8a46949d34f310769c69762
     }
 }
 
