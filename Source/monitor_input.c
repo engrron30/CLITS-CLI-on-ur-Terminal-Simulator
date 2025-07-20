@@ -133,8 +133,8 @@ static bool monitor_backspace_from_ch(char ch, char *command, int *command_len)
 {
     bool rv = false;
     if (ch == 127 || ch == '\b') {
-        if (command_len > 0) {
-            command_len--;
+        if (*command_len > 0) {
+            (*command_len)--;
             printf("\b \b");
             fflush(stdout);
         }
