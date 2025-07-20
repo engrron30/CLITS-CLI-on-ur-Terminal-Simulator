@@ -17,12 +17,14 @@ static char get_char_without_newline(void);
 static bool monitor_newlinech_from_ch(char ch, char *command, int *command_len);
 static bool monitor_querychar_from_ch(char ch, char *command, int *command_len);
 static bool monitor_backspace_from_ch(char ch, char *command, int *command_len);
+static bool monitor_otherchar_from_ch(char ch, char *command, int *command_len);
 
-HandlerEntry handlers[] = {
-    { "newline",    monitor_newlinech_from_ch },
-    { "query",      monitor_querychar_from_ch },
-    { "backspace",  monitor_backspace_from_ch },
-    { NULL,         NULL }
+HandlerEntry monitor_handlers[] = {
+    { char_id_newline,    monitor_newlinech_from_ch },
+    { char_id_querychar,  monitor_querychar_from_ch },
+    { char_id_backspace,  monitor_backspace_from_ch },
+    { char_id_otherchar,  monitor_otherchar_from_ch },
+    { char_id_max,        NULL }
 };
 
 /* Monitors user input by character by get_char_without_newline().
@@ -49,30 +51,25 @@ void monitor_input(void)
 
         while (true) {
             ch = get_char_without_newline();
+            bool handled = false;
 
-            if (monitor_newlinech_from_ch(ch, user_cmd, &user_cmd_len)) {
-                break;
+            char_id_t char_id = char_id_newline;
+            for (char_id; monitor_handlers[char_id].func != NULL; ++char_id) {
+                if (monitor_handlers[char_id].func(ch, user_cmd, &user_cmd_len)) {
+                    handled = true;
+                    break;
+                }
             }
 
-            if (monitor_querychar_from_ch(ch, user_cmd, &user_cmd_len)) {
-                continue;
-            }
-
-            if (monitor_backspace_from_ch(ch, user_cmd, &user_cmd_len)) {
-                continue;
-            }
-
-            // Monitor other chaacters and append it to char input[]
-            if (user_cmd_len < CMDLINE_INPUT_LEN - 1) {
-                user_cmd[user_cmd_len++] = ch;
-                putchar(ch);
-                fflush(stdout);
-            }
+            if (handled && char_id_newline == char_id)
+                goto PROCESS_CMD;
         }
 
+PROCESS_CMD:
         if (user_cmd_len > 0) {
             process_command(user_cmd);
         }
+
     }
 }
 
@@ -147,6 +144,20 @@ static bool monitor_backspace_from_ch(char ch, char *command, int *command_len)
             fflush(stdout);
         }
 
+        rv = true;
+    }
+
+    return rv;
+}
+
+static bool monitor_otherchar_from_ch(char ch, char *command, int *command_len)
+{
+    bool rv = false;
+
+    if (*command_len < CMDLINE_INPUT_LEN - 1) {
+        command[(*command_len)++] = ch;
+        putchar(ch);
+        fflush(stdout);
         rv = true;
     }
 

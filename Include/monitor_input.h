@@ -5,8 +5,16 @@
 
 typedef bool (*CharHandler)(char ch, char *command, int *command_len);
 
+typedef enum {
+    char_id_newline = 0,
+    char_id_querychar,
+    char_id_backspace,
+    char_id_otherchar,
+    char_id_max
+} char_id_t;
+
 typedef struct {
-    const char *name;
+    int char_id_t;
     CharHandler func;
 } HandlerEntry;
 
