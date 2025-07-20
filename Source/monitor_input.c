@@ -5,6 +5,7 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include "monitor_input.h"
 #include "process_commands.h"
 
 #define CMDLINE_NAME            "type:ALU-7360>#"
@@ -16,6 +17,13 @@ static char get_char_without_newline(void);
 static bool monitor_newlinech_from_ch(char ch, char *command, int *command_len);
 static bool monitor_querychar_from_ch(char ch, char *command, int *command_len);
 static bool monitor_backspace_from_ch(char ch, char *command, int *command_len);
+
+HandlerEntry handlers[] = {
+    { "newline",    monitor_newlinech_from_ch },
+    { "query",      monitor_querychar_from_ch },
+    { "backspace",  monitor_backspace_from_ch },
+    { NULL,         NULL }
+};
 
 /* Monitors user input by character by get_char_without_newline().
  * The character is checked whether it is:
