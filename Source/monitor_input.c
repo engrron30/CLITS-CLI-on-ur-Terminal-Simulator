@@ -13,8 +13,9 @@
 #define DIR_DATA                "Data/"
 
 static char get_char_without_newline(void);
-static bool monitor_newline_from_ch(char ch, char command[], int command_len);
-static bool monitor_querychar_from_ch(char ch, char command[], int command_len);
+static bool monitor_newlinech_from_ch(char ch, char *command, int *command_len);
+static bool monitor_querychar_from_ch(char ch, char *command, int *command_len);
+static bool monitor_backspace_from_ch(char ch, char *command, int *command_len);
 
 /* Monitors user input by character by get_char_without_newline().
  * The character is checked whether it is:
@@ -22,8 +23,7 @@ static bool monitor_querychar_from_ch(char ch, char command[], int command_len);
  *       (2) ?          (then will show suggestons),
  *       (3) BACKSPACE  (then remove last character typed by user) 
  * 
- * If none of them, keep of adding the character typed by user
- * in input string then monitor the characters if criteria
+ * If none of them, keep of adding the character typed by user * in input string then monitor the characters if criteria
  * above are to be observed.
  *
  * Wait until the user hit newline to process_command.
@@ -42,21 +42,15 @@ void monitor_input(void)
         while (true) {
             ch = get_char_without_newline();
 
-            if (monitor_newline_from_ch(ch, user_cmd, user_cmd_len)) {
+            if (monitor_newlinech_from_ch(ch, user_cmd, &user_cmd_len)) {
                 break;
             }
 
-            if (monitor_querychar_from_ch(ch, user_cmd, user_cmd_len)) {
+            if (monitor_querychar_from_ch(ch, user_cmd, &user_cmd_len)) {
                 continue;
             }
 
-            // Monitor backspace CHAR from user
-            if (ch == 127 || ch == '\b') {
-                if (user_cmd_len > 0) {
-                    user_cmd_len--;
-                    printf("\b \b");
-                    fflush(stdout);
-                }
+            if (monitor_backspace_from_ch(ch, user_cmd, &user_cmd_len)) {
                 continue;
             }
 
@@ -98,12 +92,12 @@ static char get_char_without_newline(void)
  * If newline is found, append NULL instead of newline
  * then return true.
  * */
-static bool monitor_newline_from_ch(char ch, char command[], int command_len)
+static bool monitor_newlinech_from_ch(char ch, char *command, int *command_len)
 {
     bool rv = false;
     if (ch == '\n')
     {
-        command[command_len] = '\0';
+        command[*command_len] = '\0';
         printf("\n");
         rv = true;
     }
@@ -111,7 +105,11 @@ static bool monitor_newline_from_ch(char ch, char command[], int command_len)
     return rv;
 }
 
-static bool monitor_querychar_from_ch(char ch, char command[], int command_len)
+/* Monitors if current character is the QUERY CHARACTER (eg: '?')
+ *
+ * Return true if found
+ * */
+static bool monitor_querychar_from_ch(char ch, char *command, int *command_len)
 {
     bool rv = false;
     if (ch == CMDLINE_QUERY_CMD_CHAR)
@@ -119,8 +117,28 @@ static bool monitor_querychar_from_ch(char ch, char command[], int command_len)
 
         printf("\n[Help] You typed '?'. Displaying suggestions:\n");
         // TO-DO: Add specific action for QUERY CHAR is entered
-        printf("%s %.*s", CMDLINE_NAME, command_len, command);
+        printf("%s %.*s", CMDLINE_NAME, *command_len, command);
         fflush(stdout);
+        rv = true;
+    }
+
+    return rv;
+}
+
+/* Monitors if current character is the BACKPACE character
+ *
+ * Decrement command_len by 1, remove the last character and returns true.
+ * */
+static bool monitor_backspace_from_ch(char ch, char *command, int *command_len)
+{
+    bool rv = false;
+    if (ch == 127 || ch == '\b') {
+        if (command_len > 0) {
+            command_len--;
+            printf("\b \b");
+            fflush(stdout);
+        }
+
         rv = true;
     }
 
