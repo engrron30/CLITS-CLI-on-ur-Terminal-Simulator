@@ -38,39 +38,35 @@ HandlerEntry monitor_handlers[] = {
  *
  * Wait until the user hit newline to process_command.
  * */
-void monitor_input(void)
-//void monitor_input(char *user_cmd, int *user_cmd_len)
+//void monitor_input(void)
+void monitor_input(char *user_cmd, int *user_cmd_len)
 {
-    char user_cmd[CMDLINE_INPUT_LEN];
-    int user_cmd_len = 0;
     char ch;
+    *user_cmd_len = 0;
+
+    printf("%s ", CMDLINE_NAME);
+    fflush(stdout);
 
     while (true) {
-        printf("%s ", CMDLINE_NAME);
-        fflush(stdout);
-        user_cmd_len = 0;
+        ch = get_char_without_newline();
+        bool handled = false;
+        char_id_t char_id = char_id_newline;
 
-        while (true) {
-            ch = get_char_without_newline();
-            bool handled = false;
-
-            char_id_t char_id = char_id_newline;
-            for (char_id; monitor_handlers[char_id].func != NULL; ++char_id) {
-                if (monitor_handlers[char_id].func(ch, user_cmd, &user_cmd_len)) {
-                    handled = true;
-                    break;
-                }
+        for (char_id; monitor_handlers[char_id].func != NULL; ++char_id) {
+            if (monitor_handlers[char_id].func(ch, user_cmd, user_cmd_len)) {
+                handled = true;
+                break;
             }
-
-            if (handled && char_id_newline == char_id)
-                goto PROCESS_CMD;
         }
+
+        if (handled && char_id_newline == char_id)
+            goto PROCESS_CMD;
+    }
 
 PROCESS_CMD:
         if (user_cmd_len > 0)
             process_command(user_cmd);
 
-    }
 }
 
 

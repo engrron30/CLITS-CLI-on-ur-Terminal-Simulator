@@ -6,8 +6,15 @@ static void welcome_notes(void);
 
 int main()
 {
+    char user_cmd[COMMAND_LEN];
+    int user_cmd_len = 0;
+
     welcome_notes();
-    monitor_input();
+
+    while (true) {
+        monitor_input(user_cmd, &user_cmd_len);
+    }
+
     return 0;
 }
 
