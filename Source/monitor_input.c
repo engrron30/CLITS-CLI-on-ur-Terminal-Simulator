@@ -92,10 +92,10 @@ static char get_char_without_newline(void)
     return ch;
 }
 
-/* Monitors if current character is newline.
+/* This function monitors if current character is newline.
  *
- * If newline is found, append NULL instead of newline
- * then return true.
+ * If detected, append NULL to command string instead of newline
+ * to indicate last character of the command, then returns true.
  * */
 static bool monitor_newlinech_from_ch(char ch, char *command, int *command_len)
 {
@@ -110,9 +110,9 @@ static bool monitor_newlinech_from_ch(char ch, char *command, int *command_len)
     return rv;
 }
 
-/* Monitors if current character is the QUERY CHARACTER (eg: '?')
+/* This function monitors if current character is the QUERY CHARACTER ('?').
  *
- * Return true if found
+ * If detected, do sugggest commands then returns true.
  * */
 static bool monitor_querychar_from_ch(char ch, char *command, int *command_len)
 {
@@ -130,9 +130,11 @@ static bool monitor_querychar_from_ch(char ch, char *command, int *command_len)
     return rv;
 }
 
-/* Monitors if current character is the BACKPACE character
+/* This function monitors if current character is the BACKPACE character
  *
- * Decrement command_len by 1, remove the last character and returns true.
+ * If detected, remove the last character in the command string and 
+ * decrement the length of command by 1, then returns true.
+ * Otherwise, false.
  * */
 static bool monitor_backspace_from_ch(char ch, char *command, int *command_len)
 {
@@ -150,6 +152,12 @@ static bool monitor_backspace_from_ch(char ch, char *command, int *command_len)
     return rv;
 }
 
+/* This function monitors if the current character is anything except QUERY CHAR, 
+ * NEWLINE or BACKSPACE.
+ *
+ * If detected, increment the command_len by 1 and append the current character in the
+ * command string.
+ * */
 static bool monitor_otherchar_from_ch(char ch, char *command, int *command_len)
 {
     bool rv = false;
