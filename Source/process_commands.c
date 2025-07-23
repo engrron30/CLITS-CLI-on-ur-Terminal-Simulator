@@ -14,3 +14,9 @@ void process_command(const char *cmd)
     }
 }
 
+void process_query(const char *cmd, int cmd_len)
+{
+    for (int i = 0; i < cmd_len; ++i) {
+        printf("cmd[%d] = %c\n", cmd_len, cmd[cmd_len]);
+    }
+}
