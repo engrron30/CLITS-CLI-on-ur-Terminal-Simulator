@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "monitor_input.h"
+#include "process_commands.h"
 
 static void welcome_notes(void);
 
@@ -13,6 +14,7 @@ int main()
 
     while (true) {
         monitor_input(user_cmd, &user_cmd_len);
+        process_command(user_cmd);
     }
 
     return 0;
