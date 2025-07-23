@@ -50,16 +50,13 @@ void monitor_input(void)
         fflush(stdout);
         user_cmd_len = 0;
 
-        while (true)
-        {
+        while (true) {
             ch = get_char_without_newline();
             bool handled = false;
 
             char_id_t char_id = char_id_newline;
-            for (char_id; monitor_handlers[char_id].func != NULL; ++char_id) 
-            {
-                if (monitor_handlers[char_id].func(ch, user_cmd, &user_cmd_len))
-                {
+            for (char_id; monitor_handlers[char_id].func != NULL; ++char_id) {
+                if (monitor_handlers[char_id].func(ch, user_cmd, &user_cmd_len)) {
                     handled = true;
                     break;
                 }
@@ -122,11 +119,11 @@ static bool monitor_querychar_from_ch(char ch, char *command, int *command_len)
     bool rv = false;
     if (ch == CMDLINE_QUERY_CMD_CHAR)
     {
-
         printf("\n[Help] You typed '?'. Displaying suggestions:\n");
         // TO-DO: Add specific action for QUERY CHAR is entered
         printf("%s %.*s", CMDLINE_NAME, *command_len, command);
         fflush(stdout);
+
         rv = true;
     }
 
@@ -158,17 +155,18 @@ static bool monitor_backspace_from_ch(char ch, char *command, int *command_len)
 /* This function monitors if the current character is anything except QUERY CHAR, 
  * NEWLINE or BACKSPACE.
  *
- * If detected, increment the command_len by 1 and append the current character in the
- * command string.
+ * If detected, increment the command_len by 1 and append the current character
+ * in the command string.
  * */
 static bool monitor_otherchar_from_ch(char ch, char *command, int *command_len)
 {
     bool rv = false;
-
-    if (*command_len < CMDLINE_INPUT_LEN - 1) {
+    if (*command_len < CMDLINE_INPUT_LEN - 1)
+    {
         command[(*command_len)++] = ch;
         putchar(ch);
         fflush(stdout);
+
         rv = true;
     }
 
