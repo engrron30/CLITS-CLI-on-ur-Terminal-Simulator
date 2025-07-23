@@ -66,10 +66,13 @@ void monitor_input(char *user_cmd, int *user_cmd_len)
             }
         }
 
-        if (handled && (char_id_newline == char_id      ||
-                        char_id_querychar == char_id))
-            break;
-    }
+        if (handled) {
+            switch(char_id) {
+                case char_id_newline:
+                    break;
+            }                       // End of Switch(char_id)
+        }                           // End of If(handled)
+    }                               // End of While-Loop
 }
 
 
