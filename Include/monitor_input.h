@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 
+#define COMMAND_LEN 128
+
 typedef bool (*CharHandler)(char ch, char *command, int *command_len);
 
 typedef enum {
@@ -18,6 +20,6 @@ typedef struct {
     CharHandler func;
 } HandlerEntry;
 
-void monitor_input(void);
+void monitor_input(char *command, int *command_len);
 
 #endif
