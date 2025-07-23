@@ -25,16 +25,26 @@ HandlerEntry monitor_handlers[] = {
     { char_id_max,        NULL }
 };
 
-/* Monitors user input by character by get_char_without_newline().
+/* This function monitors user input by character by get_char_without_newline().
+ *
  * The character is checked whether it is:
- *       (1) newline    (proceed to process_command and clear input)
+ *       (1) newline    (exits this function entirely with user_cmd populated
+ *                      based on the user input)
  *       (2) ?          (then will show suggestons),
  *       (3) BACKSPACE  (then remove last character typed by user) 
  * 
- * If none of them, keep of adding the character typed by user * in input string then monitor the characters if criteria
- * above are to be observed.
+ * If none of them, keep in adding the character typed by user in user_cmd string
+ * then monitor the characters if criteria above are to be observed.
  *
- * Wait until the user hit newline to process_command.
+ * INPUT:
+ *      (1) user_cmd    This string is the storage of the characters inputted
+ *                      by user. 
+ *          eg.:    User hit e -> x -> i -> t -> NEWLINE;
+ *                      then user_cmd will be exit
+ *                  User hit p -> i -> n -> g -> BACKSPACE -> NEWLINE;
+ *                      then user_cmd will be pin
+ *
+ * Wait until the user hit newline before exiting this function.
  * */
 void monitor_input(char *user_cmd, int *user_cmd_len)
 {
@@ -56,9 +66,13 @@ void monitor_input(char *user_cmd, int *user_cmd_len)
             }
         }
 
-        if (handled && char_id_newline == char_id)
-            break;
-    }
+        if (handled) {
+            switch(char_id) {
+                case char_id_newline:
+                    break;
+            }                       // End of Switch(char_id)
+        }                           // End of If(handled)
+    }                               // End of While-Loop
 }
 
 
