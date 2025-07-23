@@ -6,11 +6,9 @@
 #include <unistd.h>
 
 #include "monitor_input.h"
-#include "process_commands.h"
 
 #define CMDLINE_NAME            "type:ALU-7360>#"
 #define CMDLINE_QUERY_CMD_CHAR  '?'
-#define CMDLINE_INPUT_LEN       128
 #define DIR_DATA                "Data/"
 
 static char get_char_without_newline(void);
@@ -38,7 +36,6 @@ HandlerEntry monitor_handlers[] = {
  *
  * Wait until the user hit newline to process_command.
  * */
-//void monitor_input(void)
 void monitor_input(char *user_cmd, int *user_cmd_len)
 {
     char ch;
@@ -60,13 +57,8 @@ void monitor_input(char *user_cmd, int *user_cmd_len)
         }
 
         if (handled && char_id_newline == char_id)
-            goto PROCESS_CMD;
+            break;
     }
-
-PROCESS_CMD:
-        if (user_cmd_len > 0)
-            process_command(user_cmd);
-
 }
 
 
@@ -157,7 +149,7 @@ static bool monitor_backspace_from_ch(char ch, char *command, int *command_len)
 static bool monitor_otherchar_from_ch(char ch, char *command, int *command_len)
 {
     bool rv = false;
-    if (*command_len < CMDLINE_INPUT_LEN - 1)
+    if (*command_len < COMMAND_LEN - 1)
     {
         command[(*command_len)++] = ch;
         putchar(ch);
