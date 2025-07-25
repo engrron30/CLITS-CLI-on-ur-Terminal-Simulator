@@ -15,25 +15,39 @@ command_handler_t command_handler[] = {
     { cmd_id_max,        NULL,              NULL,               NULL                }
 };
 
+/* This function acts as a handler for processing commands.
+ * This checks the cmd string if same with any command listed
+ * in command_handler array.
+ *
+ * If detected, run the function based on the corresponding
+ * command_handler function.
+ */
 void process_command(const char *cmd) 
 {
     cmd_id_t cmd_id = 0;
     bool cmd_handled = false;
 
-    for (int i = 0; command_handler[i].func != NULL; ++i) {
-        const char* ACTUAL_CMD = command_handler[i].command_str;
+    for (cmd_id; command_handler[cmd_id].func != NULL; ++cmd_id) {
+        const char* ACTUAL_CMD = command_handler[cmd_id].command_str;
 
-        if (command_handler[i].func(cmd, ACTUAL_CMD)) {
+        if (command_handler[cmd_id].func(cmd, ACTUAL_CMD)) {
             cmd_handled = true;
-            goto EXIT;
+            goto exit;
         }
     }
 
-EXIT:
+exit:
     if (!cmd_handled)
         printf("Invalid token!\n");
 }
 
+/* This function acts as a handler for processing queries.
+ * This checks the cmd string if same with any command listed
+ * in command_handler array based on the length inputted by
+ * user.
+ *
+ * If detected, display the possible commands.
+ */
 void process_query(const char *cmd, int cmd_len)
 {
     cmd_id_t cmd_id = 0;
@@ -43,11 +57,14 @@ void process_query(const char *cmd, int cmd_len)
         const char* ACTUAL_CMD      = command_handler[cmd_id].command_str;
         const char* ACTUAL_CMD_DEF  = command_handler[cmd_id].command_def_str;
 
-        if (strncmp(cmd, ACTUAL_CMD, cmd_len) == 0)
-            printf("%s      -   %s\n", ACTUAL_CMD, ACTUAL_CMD_DEF);
+        if (strncmp(cmd, ACTUAL_CMD, cmd_len) == 0) {
+            printf("+%s      -   %s\n", ACTUAL_CMD, ACTUAL_CMD_DEF);
+        }
     }
 }
 
+/* This function exits the entire app.
+ */
 static bool process_cmd_exit(const char *cmd, const char *ACTUAL_CMD)
 {
     bool rv = false;
