@@ -15,6 +15,13 @@ command_handler_t command_handler[] = {
     { cmd_id_max,        NULL,              NULL,               NULL                }
 };
 
+/* This function acts as a handler for processing commands.
+ * This checks the cmd string if same with any command listed
+ * in command_handler array.
+ *
+ * If detected, run the function based on the corresponding
+ * command_handler function.
+ */
 void process_command(const char *cmd) 
 {
     cmd_id_t cmd_id = 0;
@@ -25,15 +32,22 @@ void process_command(const char *cmd)
 
         if (command_handler[i].func(cmd, ACTUAL_CMD)) {
             cmd_handled = true;
-            goto EXIT;
+            goto exit;
         }
     }
 
-EXIT:
+exit:
     if (!cmd_handled)
         printf("Invalid token!\n");
 }
 
+/* This function acts as a handler for processing queries.
+ * This checks the cmd string if same with any command listed
+ * in command_handler array based on the length inputted by
+ * user.
+ *
+ * If detected, display the possible commands.
+ */
 void process_query(const char *cmd, int cmd_len)
 {
     cmd_id_t cmd_id = 0;
@@ -49,6 +63,8 @@ void process_query(const char *cmd, int cmd_len)
     }
 }
 
+/* This function exits the entire app.
+ */
 static bool process_cmd_exit(const char *cmd, const char *ACTUAL_CMD)
 {
     bool rv = false;
