@@ -36,14 +36,6 @@ HandlerEntry monitor_handlers[] = {
  * If none of them, keep in adding the character typed by user in user_cmd string
  * then monitor the characters if criteria above are to be observed.
  *
- * INPUT:
- *      (1) user_cmd    This string is the storage of the characters inputted
- *                      by user. 
- *          eg.:    User hit e -> x -> i -> t -> NEWLINE;
- *                      then user_cmd will be exit
- *                  User hit p -> i -> n -> g -> BACKSPACE -> NEWLINE;
- *                      then user_cmd will be pin
- *
  * Wait until the user hit newline before exiting this function.
  * */
 void monitor_input(char *user_cmd, int *user_cmd_len)
