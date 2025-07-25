@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include "monitor_input.h"
+#include "process_commands.h"
 
 #define CMDLINE_NAME            "type:ALU-7360>#"
 #define CMDLINE_QUERY_CMD_CHAR  '?'
@@ -109,8 +110,9 @@ static bool monitor_querychar_from_ch(char ch, char *command, int *command_len)
     bool rv = false;
     if (ch == CMDLINE_QUERY_CMD_CHAR)
     {
-        printf("\n[Help] You typed '?'. Displaying suggestions:\n");
-        // TO-DO: Add specific action for QUERY CHAR is entered
+        putchar(ch);
+        //process_query(command);
+
         printf("%s %.*s", CMDLINE_NAME, *command_len, command);
         fflush(stdout);
 

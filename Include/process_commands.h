@@ -6,10 +6,11 @@ typedef enum {
     cmd_id_max
 } cmd_id_t;
 
-typedef bool (*CommandHandler_t)(const char *cmd);
+typedef bool (*CommandHandler_t)(const char *cmd, const char *ACTUAL_CMD);
 
 typedef struct {
     cmd_id_t command_id;
+    char* command_str;
     CommandHandler_t func;
 } command_handler_t;
 
