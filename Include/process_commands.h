@@ -2,7 +2,7 @@
 #define PROCESS_COMMANDS_H
 
 typedef enum {
-    cmd_id_exit = 0,
+    cmd_id_logout = 0,
     cmd_id_max
 } cmd_id_t;
 
