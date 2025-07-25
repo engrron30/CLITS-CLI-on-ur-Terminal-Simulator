@@ -16,7 +16,7 @@ typedef enum {
 } char_id_t;
 
 typedef struct {
-    int char_id_t;
+    char_id_t char_id;
     CharHandler func;
 } HandlerEntry;
 

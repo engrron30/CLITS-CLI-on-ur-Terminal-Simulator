@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include "monitor_input.h"
+#include "process_commands.h"
 
 #define CMDLINE_NAME            "type:ALU-7360>#"
 #define CMDLINE_QUERY_CMD_CHAR  '?'
@@ -36,14 +37,6 @@ HandlerEntry monitor_handlers[] = {
  * If none of them, keep in adding the character typed by user in user_cmd string
  * then monitor the characters if criteria above are to be observed.
  *
- * INPUT:
- *      (1) user_cmd    This string is the storage of the characters inputted
- *                      by user. 
- *          eg.:    User hit e -> x -> i -> t -> NEWLINE;
- *                      then user_cmd will be exit
- *                  User hit p -> i -> n -> g -> BACKSPACE -> NEWLINE;
- *                      then user_cmd will be pin
- *
  * Wait until the user hit newline before exiting this function.
  * */
 void monitor_input(char *user_cmd, int *user_cmd_len)
@@ -66,13 +59,9 @@ void monitor_input(char *user_cmd, int *user_cmd_len)
             }
         }
 
-        if (handled) {
-            switch(char_id) {
-                case char_id_newline:
-                    break;
-            }                       // End of Switch(char_id)
-        }                           // End of If(handled)
-    }                               // End of While-Loop
+        if (handled && char_id_newline == char_id)
+            break;
+    }
 }
 
 
@@ -121,8 +110,9 @@ static bool monitor_querychar_from_ch(char ch, char *command, int *command_len)
     bool rv = false;
     if (ch == CMDLINE_QUERY_CMD_CHAR)
     {
-        printf("\n[Help] You typed '?'. Displaying suggestions:\n");
-        // TO-DO: Add specific action for QUERY CHAR is entered
+        printf("%c\n", ch);
+        process_query(command, *command_len);
+
         printf("%s %.*s", CMDLINE_NAME, *command_len, command);
         fflush(stdout);
 
