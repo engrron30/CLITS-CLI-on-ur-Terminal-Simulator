@@ -11,6 +11,7 @@ typedef bool (*CommandHandler_t)(const char *cmd, const char *ACTUAL_CMD);
 typedef struct {
     cmd_id_t command_id;
     char* command_str;
+    char* command_def_str;
     CommandHandler_t func;
 } command_handler_t;
 

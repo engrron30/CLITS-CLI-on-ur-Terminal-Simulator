@@ -110,8 +110,8 @@ static bool monitor_querychar_from_ch(char ch, char *command, int *command_len)
     bool rv = false;
     if (ch == CMDLINE_QUERY_CMD_CHAR)
     {
-        putchar(ch);
-        //process_query(command);
+        printf("%c\n", ch);
+        process_query(command, *command_len);
 
         printf("%s %.*s", CMDLINE_NAME, *command_len, command);
         fflush(stdout);
