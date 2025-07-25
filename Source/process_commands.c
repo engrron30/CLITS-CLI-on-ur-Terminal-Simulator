@@ -43,8 +43,9 @@ void process_query(const char *cmd, int cmd_len)
         const char* ACTUAL_CMD      = command_handler[cmd_id].command_str;
         const char* ACTUAL_CMD_DEF  = command_handler[cmd_id].command_def_str;
 
-        if (strncmp(cmd, ACTUAL_CMD, cmd_len) == 0)
-            printf("%s      -   %s\n", ACTUAL_CMD, ACTUAL_CMD_DEF);
+        if (strncmp(cmd, ACTUAL_CMD, cmd_len) == 0) {
+            printf("+%s      -   %s\n", ACTUAL_CMD, ACTUAL_CMD_DEF);
+        }
     }
 }
 
