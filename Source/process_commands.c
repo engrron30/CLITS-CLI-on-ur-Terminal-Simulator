@@ -27,10 +27,10 @@ void process_command(const char *cmd)
     cmd_id_t cmd_id = 0;
     bool cmd_handled = false;
 
-    for (int i = 0; command_handler[i].func != NULL; ++i) {
-        const char* ACTUAL_CMD = command_handler[i].command_str;
+    for (cmd_id; command_handler[cmd_id].func != NULL; ++cmd_id) {
+        const char* ACTUAL_CMD = command_handler[cmd_id].command_str;
 
-        if (command_handler[i].func(cmd, ACTUAL_CMD)) {
+        if (command_handler[cmd_id].func(cmd, ACTUAL_CMD)) {
             cmd_handled = true;
             goto exit;
         }
