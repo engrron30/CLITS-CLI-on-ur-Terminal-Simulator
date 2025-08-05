@@ -1,6 +1,7 @@
-### Nokia ALU OLT Simulator
+# Command Line Interface for your Terminal Simulator (CLITS)
 
-This repository aims to simulate how the NOKIA ALU OLT commands are being triggered like the OLT CLI.
-Ongoing progress.
+Are you building your CLI from scratch? Want to add CLI like Cisco behavior in your device? Clone this code and you're good to go!
 
-Current branch is changed from master to main. Check if commit is already observed.
+## How to Build This Code
+
+As long as you have build-essentials, you can compile this code.
