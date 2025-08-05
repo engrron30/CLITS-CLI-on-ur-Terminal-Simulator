@@ -1,3 +1,3 @@
-### Cisco-Like Interface on your Terminal Simulator (CLI)
+### Command Line Interface for your Terminal Simulator (CLITS)
 
-This repository aims to simulate how 
+Are you building your CLI from scratch? Want to add CLI like Cisco behavior in your device? Clone this code and you're good to go!
