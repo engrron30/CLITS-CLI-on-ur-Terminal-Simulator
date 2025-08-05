@@ -1,6 +1,3 @@
-### Nokia ALU OLT Simulator
+### Cisco-Like Interface on your Terminal Simulator (CLI)
 
-This repository aims to simulate how the NOKIA ALU OLT commands are being triggered like the OLT CLI.
-Ongoing progress.
-
-Current branch is changed from master to main. Check if commit is already observed.
+This repository aims to simulate how 
