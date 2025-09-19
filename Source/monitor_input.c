@@ -13,6 +13,8 @@
 #define DIR_DATA                "Data/"
 
 static char get_char_without_newline(void);
+
+/* Character Monitoring Functions */
 static bool monitor_newlinech_from_ch(char ch, char *command, int *command_len);
 static bool monitor_querychar_from_ch(char ch, char *command, int *command_len);
 static bool monitor_backspace_from_ch(char ch, char *command, int *command_len);
@@ -26,7 +28,8 @@ HandlerEntry monitor_handlers[] = {
     { char_id_max,        NULL }
 };
 
-/* This function monitors user input by character by get_char_without_newline().
+/* This function monitors user input (character by character) by 
+ * get_char_without_newline() function.
  *
  * The character is checked whether it is:
  *       (1) newline    (exits this function entirely with user_cmd populated
@@ -34,6 +37,10 @@ HandlerEntry monitor_handlers[] = {
  *       (2) ?          (then will show suggestons),
  *       (3) BACKSPACE  (then remove last character typed by user) 
  * 
+ * The checking happens by for-looping all the functions listed in 
+ * `Character Monitoring Functions` consecutively. If one of them returns true,
+ * the iteration will stop and won't run the next monitoring functions.
+ *
  * If none of them, keep in adding the character typed by user in user_cmd string
  * then monitor the characters if criteria above are to be observed.
  *
@@ -103,7 +110,7 @@ static bool monitor_newlinech_from_ch(char ch, char *command, int *command_len)
 
 /* This function monitors if current character is the QUERY CHARACTER ('?').
  *
- * If detected, do sugggest commands then returns true.
+ * If detected, sugggest commands then returns true.
  * */
 static bool monitor_querychar_from_ch(char ch, char *command, int *command_len)
 {
@@ -131,7 +138,7 @@ static bool monitor_querychar_from_ch(char ch, char *command, int *command_len)
 static bool monitor_backspace_from_ch(char ch, char *command, int *command_len)
 {
     bool rv = false;
-    if (ch == 127 || ch == '\b') {
+    if (ch == 127 || ch == '\b') {      /* 127 is BACKSPACE in ASCII */
         if (*command_len > 0) {
             (*command_len)--;
             printf("\b \b");
@@ -144,8 +151,10 @@ static bool monitor_backspace_from_ch(char ch, char *command, int *command_len)
     return rv;
 }
 
-/* This function monitors if the current character is anything except QUERY CHAR, 
- * NEWLINE or BACKSPACE.
+/* This function monitors if the current character is other characters except:
+ *      (1) QUERY CHAR; 
+ *      (2) NEWLINE; or
+ *      (3) BACKSPACE.
  *
  * If detected, increment the command_len by 1 and append the current character
  * in the command string.
